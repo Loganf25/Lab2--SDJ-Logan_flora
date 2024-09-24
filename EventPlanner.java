@@ -7,14 +7,14 @@ public class EventPlanner {
         //Set Up Window
         JFrame frame = new JFrame("Register and Purse");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setPreferredSize(new Dimension(800, 800));
+        frame.setPreferredSize(new Dimension(1000, 1000));
         frame.setBackground(Color.WHITE);
 
         //Things to be displayed
         EventPanel eventPanel = new EventPanel();
         addDefaultEvents(eventPanel);
         frame.add(eventPanel, BorderLayout.NORTH);
-        frame.add(new EventListPanel(), BorderLayout.SOUTH);
+        frame.add(new EventListPanel(eventPanel), BorderLayout.SOUTH);
 
 
         //Set Up Window Pt.2

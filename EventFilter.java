@@ -22,7 +22,7 @@ public class EventFilter {
             else if (event instanceof Deadline)
                 return !((Deadline) event).isComplete();
             else
-                return false;
+                return true;
         };
     }
 

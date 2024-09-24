@@ -4,7 +4,7 @@ import java.time.Duration;
 public class Meeting extends Event implements Completable{
     private LocalDateTime endDateTime;
     private String location;
-    private boolean complete;
+    private boolean complete = false;
 
     public Meeting(String name, LocalDateTime start, LocalDateTime end, String location) {
         super(name, start);

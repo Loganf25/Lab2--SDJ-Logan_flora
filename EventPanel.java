@@ -80,7 +80,7 @@ public class EventPanel extends JPanel{
 
     public EventPanel() {
         //Panel Creation
-        this.setPreferredSize(new Dimension(800, 400));
+        this.setPreferredSize(new Dimension(1000, 400));
         this.setBackground(Color.BLACK);
     }
 }

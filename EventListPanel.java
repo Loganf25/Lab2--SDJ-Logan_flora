@@ -1,5 +1,3 @@
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.util.*;
 import javax.swing.*;
 import java.awt.*;
@@ -9,6 +7,7 @@ import java.util.function.Predicate;
 public class EventListPanel extends JPanel {
     //Needed
     private final ArrayList<Event> events;
+    private final EventPanel eventPanel;
     private final JPanel controlPanel;
     private final JPanel displayPanel;
     private final JComboBox sortDropDown;
@@ -19,32 +18,35 @@ public class EventListPanel extends JPanel {
     private final Map<String, Predicate<Event>> filters;
     private final ArrayList<JCheckBox> filterBoxes;
 
-    public EventListPanel() {
-        this.setPreferredSize(new Dimension(800, 400));
-        this.setBackground(Color.WHITE);
+    public EventListPanel(EventPanel eventPanel) {
+        this.eventPanel = eventPanel;
+        this.setPreferredSize(new Dimension(1000, 445));
+        this.setBackground(Color.DARK_GRAY);
+        setLayout(new BorderLayout());
         events = new ArrayList<>();
 
         //Control Panel
         controlPanel = new JPanel();
-        controlPanel.setPreferredSize(new Dimension(200, 100));
+        controlPanel.setPreferredSize(new Dimension(500, 50));
+        controlPanel.setBackground(Color.CYAN);
+
+
 
         //Add Event Button
         addEventButton.setFont(new Font("Arial", Font.BOLD, 20));
-        addEventButton.addActionListener(e -> {
-            new AddEventModal(this);
-        });
+        addEventButton.addActionListener(e -> new AddEventModal(this));
         controlPanel.add(addEventButton);
 
         //JComboBox for Sorting
         sortDropDown = new JComboBox(SORT_OPTIONS);
         sortDropDown.addActionListener(e -> {
-            if (sortDropDown.getSelectedItem().equals(SORT_OPTIONS[0]))
+            if (Objects.equals(sortDropDown.getSelectedItem(), SORT_OPTIONS[0]))
                 Collections.sort(events);
-            if (sortDropDown.getSelectedItem().equals(SORT_OPTIONS[1]))
+            if (Objects.equals(sortDropDown.getSelectedItem(), SORT_OPTIONS[1]))
                 events.sort((a1, a2) -> a1.getName().compareToIgnoreCase(a2.getName()) * -1);
-            if (sortDropDown.getSelectedItem().equals(SORT_OPTIONS[2]))
+            if (Objects.equals(sortDropDown.getSelectedItem(), SORT_OPTIONS[2]))
                 events.sort((a1, a2) -> a1.getName().compareToIgnoreCase(a2.getName()));
-            if (sortDropDown.getSelectedItem().equals(SORT_OPTIONS[3]))
+            if (Objects.equals(sortDropDown.getSelectedItem(), SORT_OPTIONS[3]))
                 events.sort((a1, a2) -> a1.getName().compareToIgnoreCase(a2.getName()) * -1);
             updateDisplay();
         });
@@ -58,20 +60,21 @@ public class EventListPanel extends JPanel {
         filterBoxes = new ArrayList<>();
         for(String filter : filters.keySet()){
             JCheckBox box = new JCheckBox(filter);
-            box.addItemListener(new ItemListener() {
-                @Override
-                public void itemStateChanged(ItemEvent e) {
-                    updateDisplay();
-                }
-            });
+            box.addItemListener(e -> updateDisplay());
             filterBoxes.add(box);
         }
 
+        //Add individual checkboxes to controlPanel
+        for(JCheckBox filter : filterBoxes)
+            controlPanel.add(filter);
         add(controlPanel, BorderLayout.NORTH);
 
         //DisplayPanel
         displayPanel = new JPanel();
-        displayPanel.setPreferredSize(new Dimension(200, 100));
+        displayPanel.setPreferredSize(new Dimension(200, 300));
+        displayPanel.setBackground(Color.PINK);
+        //Need to display the list of current Events available/added
+
         add(displayPanel, BorderLayout.SOUTH);
     }
 
@@ -95,11 +98,23 @@ public class EventListPanel extends JPanel {
 
     public void updateDisplay() {
         displayPanel.removeAll();
-        for(Event event : events){
+        displayPanel.setLayout(new BoxLayout(displayPanel, BoxLayout.Y_AXIS));
+
+        for (Event event : events){
             if(!isFiltered(event)){
-                EventPanel newEP = new EventPanel();
-                newEP.displayedEvent(event);
-                displayPanel.add(newEP);
+                Font labelFont = new Font("Times New Roman", Font.BOLD, 25);
+                JLabel newEvent = new JLabel(event.getName());
+                newEvent.setFont(labelFont);
+                JButton detailsButton = new JButton("Details");
+                detailsButton.addActionListener(e -> {eventPanel.displayedEvent(event);});
+
+                //Repositions so not side by side
+                JPanel iePanel = new JPanel();
+                iePanel.setBackground(Color.PINK);
+                iePanel.setLayout(new BoxLayout(iePanel, BoxLayout.X_AXIS));
+                iePanel.add(newEvent);
+                iePanel.add(detailsButton);
+                displayPanel.add(iePanel);
             }
         }
         revalidate();
