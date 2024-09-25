@@ -2,9 +2,13 @@ import javax.swing.*;
 import java.awt.*;
 
 public class EventPanel extends JPanel{
+    //Initialization
     private Event event;
     private final JButton completeButton = new JButton("Complete");
 
+    //Takes the newEvent and displays it to the eventPanel
+    //Will be called when user wants to see event details
+    //From name in EventListPanel
     public void displayedEvent(Event newEvent)
     {
         this.event = newEvent;
@@ -12,6 +16,7 @@ public class EventPanel extends JPanel{
         //So the last events data needs to be deleted
         this.removeAll();
 
+        //Most of following code is formatting it for the GUI
         //Displays information in a vertical box as I wanted and font changes
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         Font labelFont = new Font("Serif", Font.BOLD, 25);
@@ -59,9 +64,10 @@ public class EventPanel extends JPanel{
             comOrNo.setAlignmentX(Component.LEFT_ALIGNMENT);
             this.add(comOrNo);
         }
+        //Shows information vertically, better to look at
         this.add(Box.createVerticalStrut(5));
 
-        //Button Created if Needed
+        //Button Created if Needed (Meeting and Deadline ONLY)
         if (event instanceof Meeting | event instanceof Deadline) {
             completeButton.setPreferredSize(new Dimension(150, 50));
             this.add(completeButton, BorderLayout.SOUTH);
@@ -78,6 +84,7 @@ public class EventPanel extends JPanel{
         repaint();
     }
 
+    //Constructor
     public EventPanel() {
         //Panel Creation
         this.setPreferredSize(new Dimension(1000, 400));

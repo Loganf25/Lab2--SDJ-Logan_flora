@@ -22,6 +22,8 @@ public class EventPlanner {
         frame.setVisible(true);
     }
 
+    //Displays default events to display in eventPanel
+    //Just a test
     static void addDefaultEvents(EventPanel events){
         LocalDateTime start = LocalDateTime.of(2024, Month.SEPTEMBER, 19, 0, 0);
         Deadline studySession = new Deadline("Study Session", start);

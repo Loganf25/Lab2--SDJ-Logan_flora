@@ -35,6 +35,7 @@ public class AddEventModal extends JFrame {
     private JPanel addEventPanel() {
         //Initialize
         JPanel panel = new JPanel();
+        panel.setBackground(Color.DARK_GRAY);
         attributes = new ArrayList<>();
 
         //Setup infoCollectorPanel
@@ -64,15 +65,21 @@ public class AddEventModal extends JFrame {
         return e -> {
             attributes.clear(); //From previous adds
             infoCollectorPanel.removeAll(); //Same here
+            //Displays fields and labels vertical so it's easy to read
+            infoCollectorPanel.setLayout(new GridLayout(0, 2, 5, 5));
+
             //Switch to distinguish Event(0), Meeting(1), and Deadline(2)
             switch (eventTypeComboBox.getSelectedIndex()){
                 case 0: {
                     //Less Redundancy
+                    //Name and start time
                     getBasics();
                     break;
                 }
                 case 1: {
+                    //Name and start
                     getBasics();
+                    //End LocalDateTime
                     attributes.add(new Attribute("End Day", new JTextField(10)));
                     attributes.add(new Attribute("End Month", new JTextField(10)));
                     attributes.add(new Attribute("End Year", new JTextField(10)));
@@ -98,6 +105,7 @@ public class AddEventModal extends JFrame {
     }
 
     //Used above for less redundancy b/w cases
+    //But gets individual time variables, will be put into LocalDateTime variable later
     private void getBasics() {
         attributes.add(new Attribute("Name", new JTextField(10)));
         attributes.add(new Attribute("Day", new JTextField(10)));
@@ -107,12 +115,16 @@ public class AddEventModal extends JFrame {
         attributes.add(new Attribute("Minute", new JTextField(10)));
     }
 
+    //Creates the new event of what type is selected and  will be added to EventListPanel
     private ActionListener getEventCreator() {
         return e -> {
             Event newEvent = null;
             switch (eventTypeComboBox.getSelectedIndex()){
                 case 0: {
-                    newEvent = new Event(getInput(attributes.getFirst().value), 
+                    //Puts input data for event into a new event
+                    //Name
+                    newEvent = new Event(getInput(attributes.getFirst().value),
+                            //Start LocalDateTime
                             getDateTime(Integer.parseInt(getInput(attributes.get(1).value)), 
                             Integer.parseInt(getInput(attributes.get(2).value)), 
                             Integer.parseInt(getInput(attributes.get(3).value)), 
@@ -121,21 +133,30 @@ public class AddEventModal extends JFrame {
                     break;
                 }
                 case 1: {
+                    //Puts input data for meeting into a new meeting
+                    //Name
                     newEvent = new Meeting(getInput(attributes.getFirst().value),
+                            //Start LocalDateTime
                             getDateTime(Integer.parseInt(getInput(attributes.get(1).value)),
                                     Integer.parseInt(getInput(attributes.get(2).value)),
                                     Integer.parseInt(getInput(attributes.get(3).value)),
                                     Integer.parseInt(getInput(attributes.get(4).value)),
-                                    Integer.parseInt(getInput(attributes.get(5).value))), getDateTime(Integer.parseInt(getInput(attributes.get(1).value)),
-                                    Integer.parseInt(getInput(attributes.get(6).value)),
+                                    Integer.parseInt(getInput(attributes.get(5).value))),
+                            //End LocalDateTime
+                            getDateTime(Integer.parseInt(getInput(attributes.get(6).value)),
                                     Integer.parseInt(getInput(attributes.get(7).value)),
                                     Integer.parseInt(getInput(attributes.get(8).value)),
-                                    Integer.parseInt(getInput(attributes.get(9).value))), 
+                                    Integer.parseInt(getInput(attributes.get(9).value)),
+                                    Integer.parseInt(getInput(attributes.get(10).value))),
+                            //Location
                             getInput(attributes.get(10).value));
                     break;
                 }
                 case 2: {
+                    //Puts input data for deadline into a new deadline
+                    //Name
                     newEvent = new Deadline(getInput(attributes.getFirst().value),
+                            //Start LocalDateTime
                             getDateTime(Integer.parseInt(getInput(attributes.get(1).value)),
                                     Integer.parseInt(getInput(attributes.get(2).value)),
                                     Integer.parseInt(getInput(attributes.get(3).value)),
@@ -149,10 +170,12 @@ public class AddEventModal extends JFrame {
         };
     }
 
+    //Turns each individual time field into a single localDateTime, easier less redundant code
     private LocalDateTime getDateTime(int day, int month, int year, int hour, int minute) {
         return LocalDateTime.of(year, month, day, hour, minute);
     }
 
+    //Gets input from textFields as string
     private String getInput(JComponent c){
         if(c instanceof JTextComponent){
             return ((JTextComponent) c).getText();
